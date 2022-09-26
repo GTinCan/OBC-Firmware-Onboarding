@@ -1,5 +1,5 @@
 /* Include Files */
-#include sys_common.h
+#include "sys_common.h" //error 1
 #include "gio.h"
 
 /* FreeRTOS Kernel includes. */
@@ -21,9 +21,10 @@ xTaskHandle xTask1Handle;
 
 void main(void) {
     gioInit();
-    BaseType_t retval1, retval2
+    BaseType_t retval1, retval2; //error 2
 
     retval1 = xTaskCreate( blinkGIOB1, BLINK1_NAME, configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &xTask1Handle );
+    retval2 = xTaskCreate(blinkGIOB2, BLINK2_NAME, configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &xTask1Handle); //error 3
 
     if(retval1 && retval2){
         vTaskStartScheduler();
@@ -51,16 +52,16 @@ void blinkGIOB2( void * arg )
         for (int i = 0; i < 2; i++)
         {
             gioSetBit(gioPORTB, 2, TRUE);
-            vTaskDelay( BLINK2_DELAY_TICKS);
+            vTaskDelay( BLINK2_DELAY_TICKS * 2);
             gioSetBit(gioPORTB, 2, FALSE);
-            vTaskDelay( BLINK2_DELAY_TICKS);
+            vTaskDelay( BLINK2_DELAY_TICKS * 2); //error 4
         }
         for (int i = 0; i < 4; i++)
         {
             gioSetBit(gioPORTB, 2, TRUE);
-            vTaskDelay( BLINK2_DELAY_TICKS * 2);
+            vTaskDelay( BLINK2_DELAY_TICKS); //error 5
             gioSetBit(gioPORTB, 2, FALSE);
-            vTaskDelay( BLINK2_DELAY_TICKS * 2);
+            vTaskDelay( BLINK2_DELAY_TICKS);
         }
     }
 }
